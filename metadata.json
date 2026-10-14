@@ -1,0 +1,6 @@
+{
+  "name": "Schedulix AI - Multi-Institutional Timetable Scheduling Engine",
+  "description": "Multi-institutional timetable, section planning, and academic scheduler with balanced constraint satisfaction and workload analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "password_hash": "58635e526af4d799b0a4e097b6bf9009a0246ec4e0897814e618f24d88e82924",
+    "salt": "844b8ca4367d02cb57376d3d492ed70d",
+    "setup_completed": true,
+    "updated_at": "2026-10-14T10:51:09.144Z"
+  },
+  "users": {}
+}
