@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Schedulix AI - Multi-Institutional Timetable &amp; Exam Scheduler</title>
-    <meta name="description" content="Modern institutional timetable, section planning, and exam scheduler with balanced constraint satisfaction and workload analytics." />
-    <meta property="og:title" content="Schedulix AI - Multi-Institutional Timetable &amp; Exam Scheduler" />
-    <meta property="og:description" content="Modern institutional timetable, section planning, and exam scheduler with balanced constraint satisfaction and workload analytics." />
+    <title>Schedulix AI - Multi-Institutional Timetable Scheduling Engine</title>
+    <meta name="description" content="Multi-institutional timetable, section planning, and academic scheduler with balanced constraint satisfaction and workload analytics." />
+    <meta property="og:title" content="Schedulix AI - Multi-Institutional Timetable Scheduling Engine" />
+    <meta property="og:description" content="Multi-institutional timetable, section planning, and academic scheduler with balanced constraint satisfaction and workload analytics." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
 
@@ -360,6 +360,16 @@
                       <i id="loginEyeIcon" data-lucide="eye" class="w-4 h-4"></i>
                     </button>
                   </div>
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-violet-950/40 border border-violet-500/20 text-[11px] text-slate-300 flex items-center justify-between">
+                  <div class="text-left">
+                    <span class="text-violet-300 font-semibold block">Testing Account:</span>
+                    <span class="font-mono text-[10px] text-slate-400">moizkhanlinkedin@gmail.com</span>
+                  </div>
+                  <button type="button" onclick="fillTestAccount()" class="px-2.5 py-1 rounded-lg bg-violet-600/30 hover:bg-violet-600/50 text-violet-200 text-[10px] font-mono border border-violet-500/30 transition-colors flex items-center gap-1">
+                    <i data-lucide="key" class="w-3 h-3"></i> Fill &amp; Sign In
+                  </button>
                 </div>
 
                 <button
@@ -1817,33 +1827,63 @@
 
             <!-- Sections Form -->
             <div id="inputPane-sections" class="hidden space-y-4">
-              <form id="formAddSection" onsubmit="handleAddSection(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-violet-500/20 text-xs">
+              <form id="formAddSection" onsubmit="handleAddSection(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 bg-slate-950 p-4 rounded-xl border border-violet-500/20 text-xs">
                 <div>
-                  <label class="block text-slate-400 mb-1">Section Name</label>
-                  <input type="text" id="secName" placeholder="e.g. DS-1B" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500" />
+                  <label class="block text-slate-400 mb-1">Section Name <span class="text-rose-400">*</span></label>
+                  <input type="text" id="secName" placeholder="e.g. A" required oninput="updateSectionPreview()" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500 font-medium" />
                 </div>
                 <div>
-                  <label class="block text-slate-400 mb-1">Student Headcount</label>
+                  <label class="block text-slate-400 mb-1">Department <span class="text-rose-400">*</span></label>
+                  <select id="secDeptSelect" required onchange="updateSectionPreview()" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500"></select>
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1">Shift <span class="text-slate-500">(Optional)</span></label>
+                  <select id="secShift" onchange="updateSectionPreview()" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500">
+                    <option value="">None / Optional</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1">Batch <span class="text-slate-500">(Optional)</span></label>
+                  <select id="secBatch" onchange="updateSectionPreview()" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500">
+                    <option value="">None / Optional</option>
+                    <option value="Fall">Fall</option>
+                    <option value="Spring">Spring</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1">Year <span class="text-slate-500">(Optional)</span></label>
+                  <input type="number" id="secYear" placeholder="e.g. 2025" min="2020" max="2040" oninput="updateSectionPreview()" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500 font-mono" />
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1">Student Headcount <span class="text-rose-400">*</span></label>
                   <input type="number" id="secStudents" value="45" min="1" max="150" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500" />
-                </div>
-                <div>
-                  <label class="block text-slate-400 mb-1">Department</label>
-                  <select id="secDeptSelect" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500"></select>
                 </div>
                 <div class="flex items-end">
                   <button type="submit" class="w-full py-2.5 px-3 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium flex items-center justify-center gap-1.5 transition-colors">
                     <i data-lucide="plus" class="w-4 h-4"></i> Add Section
                   </button>
                 </div>
+                <!-- Live Cohort Title Preview -->
+                <div class="sm:col-span-2 lg:col-span-7 flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg bg-slate-900/80 border border-violet-500/20 text-xs">
+                  <div class="flex items-center gap-2">
+                    <span class="text-slate-400 font-medium">Timetable Cohort Title Preview:</span>
+                    <span id="secTitlePreview" class="font-bold text-violet-300 font-mono">Morning BS-DS Fall 2025 (A)</span>
+                  </div>
+                  <span class="text-[11px] text-slate-500 italic">Combines Shift • Degree • Batch • Year • Section</span>
+                </div>
               </form>
               <div class="overflow-x-auto w-full touch-scroll">
-                <table class="w-full text-xs text-left min-w-[600px]">
+                <table class="w-full text-xs text-left min-w-[680px]">
                   <thead class="bg-slate-950 font-mono text-slate-400 border-b border-violet-500/20">
                     <tr>
-                      <th class="p-3">Section Name</th>
-                      <th class="p-3">Students</th>
+                      <th class="p-3">Section / Timetable Cohort</th>
+                      <th class="p-3">Shift</th>
+                      <th class="p-3">Batch</th>
+                      <th class="p-3">Year</th>
                       <th class="p-3">Department</th>
-                      <th class="p-3">Max Daily Cap</th>
+                      <th class="p-3">Students</th>
                       <th class="p-3 text-right">Action</th>
                     </tr>
                   </thead>
@@ -1895,18 +1935,18 @@
             <div id="inputPane-rooms" class="hidden space-y-4">
               <form id="formAddRoom" onsubmit="handleAddRoom(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 bg-slate-950 p-4 rounded-xl border border-violet-500/20 text-xs">
                 <div>
-                  <label class="block text-slate-400 mb-1">Room ID / Name</label>
+                  <label class="block text-slate-400 mb-1">Room ID / Name <span class="text-rose-400">*</span></label>
                   <input type="text" id="rName" placeholder="e.g. Hall 203" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500" />
                 </div>
                 <div>
-                  <label class="block text-slate-400 mb-1">Facility Type</label>
-                  <select id="rType" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500">
-                    <option value="Lecture">Lecture Hall</option>
-                    <option value="Lab">Laboratory</option>
+                  <label class="block text-slate-400 mb-1">Room Type <span class="text-rose-400">*</span></label>
+                  <select id="rType" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500 font-medium">
+                    <option value="Theory Room" selected>Theory Room</option>
+                    <option value="Lab Room">Lab Room</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-slate-400 mb-1">Seating Capacity</label>
+                  <label class="block text-slate-400 mb-1">Seating Capacity <span class="text-rose-400">*</span></label>
                   <input type="number" id="rCap" value="60" min="10" max="300" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500" />
                 </div>
                 <div>
@@ -1925,9 +1965,10 @@
                 <table class="w-full text-xs text-left min-w-[500px]">
                   <thead class="bg-slate-950 font-mono text-slate-400 border-b border-violet-500/20">
                     <tr>
-                      <th class="p-3">Room ID / Name</th>
-                      <th class="p-3">Facility Type</th>
+                      <th class="p-3">Room Name / ID</th>
+                      <th class="p-3">Room Type</th>
                       <th class="p-3">Capacity</th>
+                      <th class="p-3">Authorized Depts</th>
                       <th class="p-3 text-right">Action</th>
                     </tr>
                   </thead>
@@ -1938,39 +1979,59 @@
 
             <!-- Courses Form -->
             <div id="inputPane-courses" class="hidden space-y-4">
-              <form id="formAddCourse" onsubmit="handleAddCourse(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 bg-slate-950 p-4 rounded-xl border border-violet-500/20 text-xs">
-                <div class="sm:col-span-2">
-                  <label class="block text-slate-400 mb-1">Course Title</label>
+              <form id="formAddCourse" onsubmit="handleAddCourse(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-12 gap-3.5 bg-slate-950 p-4 rounded-xl border border-violet-500/20 text-xs">
+                <div class="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-3">
+                  <label class="block text-slate-400 mb-1">Course Title <span class="text-rose-400">*</span></label>
                   <input type="text" id="cTitle" placeholder="e.g. Deep Learning" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500" />
                 </div>
-                <div>
-                  <label class="block text-slate-400 mb-1">Code</label>
-                  <input type="text" id="cCode" placeholder="DS-401" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500 font-mono" />
-                </div>
-                <div>
+                <div class="col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-1">
                   <label class="block text-slate-400 mb-1">Department</label>
                   <select id="cDeptSelect" onchange="handleCourseDeptChange(this.value)" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500"></select>
                 </div>
-                <div>
-                  <label class="block text-slate-400 mb-1">Section</label>
+                <div class="col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
+                  <label class="block text-slate-400 mb-1">Section <span class="text-rose-400">*</span></label>
                   <select id="cSecSelect" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500"></select>
                 </div>
-                <div>
-                  <label class="block text-slate-400 mb-1">Teacher</label>
-                  <select id="cTeacherSelect" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500"></select>
+                <div class="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-3 relative" id="teacherSearchWrapper">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="block text-slate-400">Teacher (Search by Name) <span class="text-rose-400">*</span></label>
+                    <span id="cTeacherSelectedDeptBadge" class="text-[10px] font-mono text-violet-400"></span>
+                  </div>
+                  <div class="relative">
+                    <input 
+                      type="text" 
+                      id="cTeacherSearchInput" 
+                      placeholder="Type name to search faculty..." 
+                      autocomplete="off" 
+                      onfocus="openTeacherDropdown()" 
+                      oninput="handleTeacherSearchInput(this.value)" 
+                      onkeydown="handleTeacherSearchKeydown(event)"
+                      class="w-full pl-8 pr-7 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500 placeholder:text-slate-500" 
+                    />
+                    <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    <button type="button" id="cTeacherClearBtn" onclick="clearTeacherSelection(event)" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5" title="Clear selection">
+                      <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                  </div>
+                  <!-- Hidden native select for form validity & backward compatibility -->
+                  <select id="cTeacherSelect" required class="sr-only pointer-events-none"></select>
+                  <!-- Floating searchable dropdown list -->
+                  <div id="cTeacherDropdownList" class="hidden absolute z-50 left-0 right-0 mt-1 max-h-56 overflow-y-auto bg-slate-900/95 backdrop-blur-md border border-violet-500/30 rounded-xl shadow-2xl divide-y divide-violet-500/10 text-xs">
+                    <!-- Populated dynamically -->
+                  </div>
                 </div>
-                <div>
-                  <label class="block text-slate-400 mb-1" id="cCreditsLabel">Credits (1-4)</label>
+                <div class="col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-1">
+                  <label class="block text-slate-400 mb-1" id="cCreditsLabel">Credits (1-4) <span class="text-rose-400">*</span></label>
                   <input type="number" id="cCredits" value="3" min="1" max="4" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500" />
                 </div>
-                <div>
-                  <label class="block text-slate-400 mb-1">Type</label>
-                  <select id="cIsLab" class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500">
-                    <option value="Lecture">Lecture</option>
+                <div class="col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-1">
+                  <label class="block text-slate-400 mb-1">Course Type <span class="text-rose-400">*</span></label>
+                  <select id="cIsLab" required class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-violet-500/20 text-white focus:outline-none focus:border-violet-500 font-medium">
+                    <option value="Theory" selected>Theory</option>
                     <option value="Lab">Lab</option>
                   </select>
                 </div>
-                <div class="flex items-end">
+                <div class="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-1 flex items-end">
                   <button type="submit" class="w-full py-2.5 px-3 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium flex items-center justify-center gap-1.5 transition-colors">
                     <i data-lucide="plus" class="w-4 h-4"></i> Add Course
                   </button>
@@ -1982,9 +2043,11 @@
                     <tr>
                       <th class="p-3">Course Title</th>
                       <th class="p-3">Code</th>
-                      <th class="p-3" id="thCourseUnits">Credit Hours</th>
+                      <th class="p-3">Department</th>
                       <th class="p-3">Section</th>
                       <th class="p-3">Assigned Faculty</th>
+                      <th class="p-3" id="thCourseUnits">Credit Hours</th>
+                      <th class="p-3">Course Type</th>
                       <th class="p-3 text-right">Action</th>
                     </tr>
                   </thead>
@@ -3160,7 +3223,15 @@
           const savedSelDepts = localStorage.getItem(STORAGE_KEY_SELECTED_DEPTS);
 
           if (savedDepts) departments = JSON.parse(savedDepts);
-          if (savedSecs) sections = JSON.parse(savedSecs);
+          if (savedSecs) {
+            sections = JSON.parse(savedSecs);
+            sections.forEach(s => {
+              if (s.shift === undefined) s.shift = '';
+              if (s.batch === undefined) s.batch = '';
+              if (s.year === undefined) s.year = null;
+              if (!s.fullName) s.fullName = getSectionDisplayName(s);
+            });
+          }
           if (savedTeachers) teachers = JSON.parse(savedTeachers);
           if (savedRooms) rooms = JSON.parse(savedRooms);
           if (savedCourses) courses = JSON.parse(savedCourses);
@@ -4645,6 +4716,15 @@
         }
       }
 
+      function fillTestAccount() {
+        const emailInput = document.getElementById('loginEmail');
+        const passInput = document.getElementById('loginPassword');
+        if (emailInput) emailInput.value = 'moizkhanlinkedin@gmail.com';
+        if (passInput) passInput.value = 'Moiz123456!';
+        const submitBtn = document.getElementById('loginSubmitBtn');
+        if (submitBtn) submitBtn.click();
+      }
+
       async function handleUserSignIn(e) {
         e.preventDefault();
         const email = document.getElementById('loginEmail')?.value?.trim().toLowerCase();
@@ -5627,23 +5707,23 @@
         ];
 
         rooms = [
-          { id: 'r-101', name: 'Room 101 - Newton Hall', type: 'Lecture', capacity: 45, departmentIds: ['ALL'] },
-          { id: 'r-102', name: 'Room 102 - Iqbal Room', type: 'Lecture', capacity: 45, departmentIds: ['ALL'] },
-          { id: 'r-201', name: 'Science Lab A (Physics & Chem)', type: 'Lab', capacity: 40, departmentIds: ['SS', 'HSS'] },
-          { id: 'r-202', name: 'Computer & Robotics Lab', type: 'Lab', capacity: 40, departmentIds: ['ALL'] },
-          { id: 'r-301', name: 'Room 301 - Senior Wing', type: 'Lecture', capacity: 50, departmentIds: ['HSS'] },
+          { id: 'r-101', name: 'Room 101 - Newton Hall', type: 'Theory Room', room_type: 'Theory Room', capacity: 45, departmentIds: ['ALL'] },
+          { id: 'r-102', name: 'Room 102 - Iqbal Room', type: 'Theory Room', room_type: 'Theory Room', capacity: 45, departmentIds: ['ALL'] },
+          { id: 'r-201', name: 'Science Lab A (Physics & Chem)', type: 'Lab Room', room_type: 'Lab Room', capacity: 40, departmentIds: ['SS', 'HSS'] },
+          { id: 'r-202', name: 'Computer & Robotics Lab', type: 'Lab Room', room_type: 'Lab Room', capacity: 40, departmentIds: ['ALL'] },
+          { id: 'r-301', name: 'Room 301 - Senior Wing', type: 'Theory Room', room_type: 'Theory Room', capacity: 50, departmentIds: ['HSS'] },
         ];
 
         courses = [
-          { id: 'c-1', code: 'MTH-9', title: 'Mathematics Grade 9', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-9a', teacherId: 't-101', requiredRoomType: 'Lecture' },
-          { id: 'c-2', code: 'ENG-9', title: 'English Language & Comp', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-9a', teacherId: 't-102', requiredRoomType: 'Lecture' },
-          { id: 'c-3', code: 'PHY-9', title: 'Physics Principles & Lab', departmentId: 'SS', creditHours: 4, weeklyPeriods: 4, sectionId: 'sec-9a', teacherId: 't-103', requiredRoomType: 'Lab' },
-          { id: 'c-4', code: 'CHM-9', title: 'General Chemistry', departmentId: 'SS', creditHours: 4, weeklyPeriods: 4, sectionId: 'sec-9a', teacherId: 't-104', requiredRoomType: 'Lab' },
-          { id: 'c-5', code: 'BIO-9', title: 'Biology & Life Science', departmentId: 'SS', creditHours: 4, weeklyPeriods: 4, sectionId: 'sec-9a', teacherId: 't-105', requiredRoomType: 'Lecture' },
-          { id: 'c-6', code: 'CS-9', title: 'Computer Studies', departmentId: 'SS', creditHours: 3, weeklyPeriods: 3, sectionId: 'sec-9a', teacherId: 't-106', requiredRoomType: 'Lab' },
-          { id: 'c-7', code: 'MTH-10', title: 'Advanced Math Grade 10', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-10a', teacherId: 't-101', requiredRoomType: 'Lecture' },
-          { id: 'c-8', code: 'ENG-10', title: 'English Literature 10', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-10a', teacherId: 't-102', requiredRoomType: 'Lecture' },
-          { id: 'c-9', code: 'PHY-11', title: 'Mechanics & Waves (Grade 11)', departmentId: 'HSS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-11a', teacherId: 't-103', requiredRoomType: 'Lab' },
+          { id: 'c-1', code: 'MTH-9', title: 'Mathematics Grade 9', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-9a', teacherId: 't-101', courseType: 'Theory', requiredRoomType: 'Theory Room' },
+          { id: 'c-2', code: 'ENG-9', title: 'English Language & Comp', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-9a', teacherId: 't-102', courseType: 'Theory', requiredRoomType: 'Theory Room' },
+          { id: 'c-3', code: 'PHY-9', title: 'Physics Principles & Lab', departmentId: 'SS', creditHours: 4, weeklyPeriods: 4, sectionId: 'sec-9a', teacherId: 't-103', courseType: 'Lab', requiredRoomType: 'Lab Room' },
+          { id: 'c-4', code: 'CHM-9', title: 'General Chemistry', departmentId: 'SS', creditHours: 4, weeklyPeriods: 4, sectionId: 'sec-9a', teacherId: 't-104', courseType: 'Lab', requiredRoomType: 'Lab Room' },
+          { id: 'c-5', code: 'BIO-9', title: 'Biology & Life Science', departmentId: 'SS', creditHours: 4, weeklyPeriods: 4, sectionId: 'sec-9a', teacherId: 't-105', courseType: 'Theory', requiredRoomType: 'Theory Room' },
+          { id: 'c-6', code: 'CS-9', title: 'Computer Studies', departmentId: 'SS', creditHours: 3, weeklyPeriods: 3, sectionId: 'sec-9a', teacherId: 't-106', courseType: 'Lab', requiredRoomType: 'Lab Room' },
+          { id: 'c-7', code: 'MTH-10', title: 'Advanced Math Grade 10', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-10a', teacherId: 't-101', courseType: 'Theory', requiredRoomType: 'Theory Room' },
+          { id: 'c-8', code: 'ENG-10', title: 'English Literature 10', departmentId: 'SS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-10a', teacherId: 't-102', courseType: 'Theory', requiredRoomType: 'Theory Room' },
+          { id: 'c-9', code: 'PHY-11', title: 'Mechanics & Waves (Grade 11)', departmentId: 'HSS', creditHours: 5, weeklyPeriods: 5, sectionId: 'sec-11a', teacherId: 't-103', courseType: 'Lab', requiredRoomType: 'Lab Room' },
         ];
 
         updateInstitutionUIState();
@@ -5718,7 +5798,17 @@
         activeScopedCourses.forEach(c => {
           const sec = sections.find(s => s.id === c.sectionId);
           const deptId = c.departmentId || sec?.departmentId || 'DS';
-          const isLab = c.requiredRoomType === 'Lab';
+          const isLab = (
+            c.courseType === 'Lab' ||
+            c.course_type === 'Lab' ||
+            c.requiredRoomType === 'Lab Room' ||
+            c.requiredRoomType === 'Lab' ||
+            c.required_room_type === 'Lab Room' ||
+            c.code.endsWith('L') ||
+            c.title.toLowerCase().includes('lab')
+          );
+          const courseType = isLab ? 'Lab' : 'Theory';
+          const reqRoomType = isLab ? 'Lab Room' : 'Theory Room';
 
           if (activeInstitutionType === 'school_college') {
             const periods = c.weeklyPeriods || c.creditHours || 4;
@@ -5730,9 +5820,10 @@
                 departmentId: deptId,
                 teacherId: c.teacherId,
                 sectionId: c.sectionId,
-                requiredRoomType: c.requiredRoomType,
+                courseType: courseType,
+                requiredRoomType: reqRoomType,
                 duration: 1,
-                isLab: false,
+                isLab: isLab,
               });
             }
           } else if (isLab) {
@@ -5744,7 +5835,8 @@
               departmentId: deptId,
               teacherId: c.teacherId,
               sectionId: c.sectionId,
-              requiredRoomType: 'Lab',
+              courseType: 'Lab',
+              requiredRoomType: 'Lab Room',
               duration: labDur,
               isLab: true,
             });
@@ -5759,7 +5851,8 @@
               departmentId: deptId,
               teacherId: c.teacherId,
               sectionId: c.sectionId,
-              requiredRoomType: 'Lecture',
+              courseType: 'Theory',
+              requiredRoomType: 'Theory Room',
               duration: 2,
               isLab: false,
               partnerId: b2Id,
@@ -5771,7 +5864,8 @@
               departmentId: deptId,
               teacherId: c.teacherId,
               sectionId: c.sectionId,
-              requiredRoomType: 'Lecture',
+              courseType: 'Theory',
+              requiredRoomType: 'Theory Room',
               duration: 1,
               isLab: false,
               partnerId: b1Id,
@@ -5785,7 +5879,8 @@
               departmentId: deptId,
               teacherId: c.teacherId,
               sectionId: c.sectionId,
-              requiredRoomType: 'Lecture',
+              courseType: 'Theory',
+              requiredRoomType: 'Theory Room',
               duration: 2,
               isLab: false,
             });
@@ -5797,7 +5892,8 @@
               departmentId: deptId,
               teacherId: c.teacherId,
               sectionId: c.sectionId,
-              requiredRoomType: 'Lecture',
+              courseType: 'Theory',
+              requiredRoomType: 'Theory Room',
               duration: 1,
               isLab: false,
             });
@@ -5884,9 +5980,17 @@
 
               if (!spanValid) continue;
 
-              // Check available eligible room
+              // Strict Room-Type to Course-Type Hard Constraint:
+              // Condition A: If the current node being scheduled is a Lab course, algorithm MUST ONLY assign a room where room_type == 'Lab Room'
+              // Condition B: If the current node is a Theory course, algorithm MUST ONLY assign a room where room_type == 'Theory Room'
+              // If no room of the correct type is free in this time slot, algorithm registers a conflict and moves to the next valid time slot.
               const eligibleRoom = rooms.find(r => {
-                if (r.type !== block.requiredRoomType) return false;
+                const rawRType = r.type || r.room_type || '';
+                const rType = (rawRType === 'Lab Room' || rawRType === 'Lab' || rawRType.toLowerCase().includes('lab')) ? 'Lab Room' : 'Theory Room';
+
+                if (block.isLab && rType !== 'Lab Room') return false;
+                if (!block.isLab && rType !== 'Theory Room') return false;
+
                 if (r.capacity < section.studentCount) return false;
                 if (r.departmentIds && !r.departmentIds.includes('ALL')) {
                   if (!r.departmentIds.includes(block.departmentId)) return false;
@@ -5928,7 +6032,7 @@
                     teacherId: teacher.id,
                     teacherName: teacher.name,
                     sectionId: section.id,
-                    sectionName: section.name,
+                    sectionName: getSectionDisplayName(section) || section.name,
                     roomId: eligibleRoom.id,
                     roomName: eligibleRoom.name,
                     roomType: eligibleRoom.type,
@@ -6010,28 +6114,48 @@
                 max_daily_slots: t.maxDailySlots || 4,
                 max_continuous_slots: t.maxContinuousSlots || 2,
               })),
-              rooms: rooms.map(r => ({
-                room_id: r.id,
-                capacity: r.capacity,
-                room_type: r.type,
-                department_ids: r.departmentIds || ['ALL'],
-              })),
+              rooms: rooms.map(r => {
+                const isLabRoom = r.type === 'Lab Room' || r.type === 'Lab' || r.room_type === 'Lab Room' || r.room_type === 'Lab';
+                return {
+                  room_id: r.id,
+                  capacity: r.capacity,
+                  room_type: isLabRoom ? 'Lab Room' : 'Theory Room',
+                  department_ids: r.departmentIds || ['ALL'],
+                };
+              }),
               sections: sections.map(s => ({
                 section_id: s.id,
+                name: s.name,
+                shift: s.shift || null,
+                batch: s.batch || null,
+                year: s.year || null,
+                full_name: getSectionDisplayName(s),
                 department_id: s.departmentId || 'DS',
                 total_students: s.studentCount,
                 max_daily_hours: s.maxDailyHours || 4,
               })),
-              courses: courses.map(c => ({
-                course_code: c.code,
-                title: c.title,
-                department_id: c.departmentId || 'DS',
-                credit_hours: c.creditHours,
-                weekly_periods: c.weeklyPeriods || c.creditHours,
-                section_id: c.sectionId,
-                teacher_id: c.teacherId,
-                required_room_type: c.requiredRoomType,
-              })),
+              courses: courses.map(c => {
+                const isLab = (
+                  c.courseType === 'Lab' ||
+                  c.course_type === 'Lab' ||
+                  c.requiredRoomType === 'Lab Room' ||
+                  c.requiredRoomType === 'Lab' ||
+                  c.required_room_type === 'Lab Room' ||
+                  c.code.endsWith('L') ||
+                  c.title.toLowerCase().includes('lab')
+                );
+                return {
+                  course_code: c.code,
+                  title: c.title,
+                  department_id: c.departmentId || 'DS',
+                  credit_hours: c.creditHours,
+                  weekly_periods: c.weeklyPeriods || c.creditHours,
+                  section_id: c.sectionId,
+                  teacher_id: c.teacherId,
+                  course_type: isLab ? 'Lab' : 'Theory',
+                  required_room_type: isLab ? 'Lab Room' : 'Theory Room',
+                };
+              }),
               institution_type: activeInstitutionType,
               school_timing_config: schoolTimingConfig,
               global_constraints: {
@@ -6069,7 +6193,7 @@
                   teacherId: s.teacher_id,
                   teacherName: s.teacher_name || teacher?.name || s.teacher_id,
                   sectionId: s.section_id,
-                  sectionName: sec?.name || s.section_id,
+                  sectionName: getSectionDisplayName(sec) || s.section_name || sec?.name || s.section_id,
                   roomId: s.room_id,
                   roomName: room?.name || s.room_name || s.room_id,
                   roomType: s.room_type || room?.type || 'Lecture',
@@ -6218,7 +6342,8 @@
         if (rSelect) {
           rSelect.innerHTML = rooms.map(r => {
             const access = (r.departmentIds || ['ALL']).join(', ');
-            return `<option value="${r.id}" ${r.id === slot.roomId ? 'selected' : ''}>${r.name} (${r.type} - cap ${r.capacity} - ${access})</option>`;
+            const rType = (r.type === 'Lab Room' || r.type === 'Lab' || r.room_type === 'Lab Room' || r.room_type === 'Lab') ? 'Lab Room' : 'Theory Room';
+            return `<option value="${r.id}" ${r.id === slot.roomId ? 'selected' : ''}>${r.name} (${rType} - cap ${r.capacity} - ${access})</option>`;
           }).join('');
         }
 
@@ -6312,6 +6437,33 @@
           conflicts.push(
             `Capacity Warning: Room '${rObj.name}' has capacity ${rObj.capacity}, but section '${sec.name}' has ${sec.studentCount} students.`
           );
+        }
+
+        // Strict Room-Type to Course-Type validation
+        if (rObj) {
+          const courseObj = courses.find(c => c.code === current.courseId || c.id === current.courseId);
+          const isLabCourse = (
+            current.courseType === 'Lab' ||
+            current.isLab ||
+            courseObj?.courseType === 'Lab' ||
+            courseObj?.course_type === 'Lab' ||
+            courseObj?.requiredRoomType === 'Lab Room' ||
+            courseObj?.requiredRoomType === 'Lab' ||
+            (current.courseId && current.courseId.endsWith('L')) ||
+            (current.courseName || '').toLowerCase().includes('lab')
+          );
+          const rawRType = rObj.type || rObj.room_type || '';
+          const rType = (rawRType === 'Lab Room' || rawRType === 'Lab' || rawRType.toLowerCase().includes('lab')) ? 'Lab Room' : 'Theory Room';
+
+          if (isLabCourse && rType !== 'Lab Room') {
+            conflicts.push(
+              `Room-Type Conflict: Course '${current.courseId}' is a Lab course and MUST strictly be scheduled in a 'Lab Room' (selected facility is a '${rType}').`
+            );
+          } else if (!isLabCourse && rType !== 'Theory Room') {
+            conflicts.push(
+              `Room-Type Conflict: Course '${current.courseId}' is a Theory course and MUST strictly be scheduled in a 'Theory Room' (selected facility is a '${rType}').`
+            );
+          }
         }
 
         if (conflicts.length > 0) {
@@ -6432,6 +6584,31 @@
               showToast('error', 'Clash Detected', `Section '${slot.sectionName}' already has a class at this time!`);
               return;
             }
+          }
+        }
+
+        // Strict Room-Type constraint check
+        if (rObj) {
+          const courseObj = courses.find(c => c.code === slot.courseId || c.id === slot.courseId);
+          const isLabCourse = (
+            slot.courseType === 'Lab' ||
+            slot.isLab ||
+            courseObj?.courseType === 'Lab' ||
+            courseObj?.course_type === 'Lab' ||
+            courseObj?.requiredRoomType === 'Lab Room' ||
+            courseObj?.requiredRoomType === 'Lab' ||
+            (slot.courseId && slot.courseId.endsWith('L')) ||
+            (slot.courseName || '').toLowerCase().includes('lab')
+          );
+          const rawRType = rObj.type || rObj.room_type || '';
+          const rType = (rawRType === 'Lab Room' || rawRType === 'Lab' || rawRType.toLowerCase().includes('lab')) ? 'Lab Room' : 'Theory Room';
+
+          if (isLabCourse && rType !== 'Lab Room') {
+            showToast('error', 'Room-Type Conflict', `Lab courses must strictly be scheduled in a 'Lab Room'!`);
+            return;
+          } else if (!isLabCourse && rType !== 'Theory Room') {
+            showToast('error', 'Room-Type Conflict', `Theory courses must strictly be scheduled in a 'Theory Room'!`);
+            return;
           }
         }
 
@@ -6707,7 +6884,7 @@
                 : 'bg-slate-900/90 text-slate-300 hover:text-white hover:bg-slate-800 border border-violet-500/20'}"
             >
               <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${dept?.color || '#8b5cf6'}"></span>
-              <span>${sec.name}</span>
+              <span>${getSectionDisplayName(sec)}</span>
               <span class="text-[10px] text-slate-400 font-mono">(${sec.studentCount})</span>
             </button>
           `;
@@ -6888,7 +7065,7 @@
 
         const ascSectionTitle = document.getElementById('ascSectionTitle');
         if (ascSectionTitle) {
-          ascSectionTitle.textContent = secObj ? secObj.name : (sections.length > 0 ? sections[0].name : 'Timetable Schedule');
+          ascSectionTitle.textContent = secObj ? getSectionDisplayName(secObj) : (sections.length > 0 ? getSectionDisplayName(sections[0]) : 'Timetable Schedule');
         }
 
         const ascTimestamp = document.getElementById('ascTimestamp');
@@ -7166,7 +7343,7 @@
           } else if (activeViewportTab === 'master') {
             ascSectionTitle.textContent = 'Master Timetable Schedule';
           } else {
-            ascSectionTitle.textContent = activeSecObj ? activeSecObj.name : (sections.length > 0 ? sections[0].name : 'Timetable Schedule');
+            ascSectionTitle.textContent = activeSecObj ? getSectionDisplayName(activeSecObj) : (sections.length > 0 ? getSectionDisplayName(sections[0]) : 'Timetable Schedule');
           }
         }
 
@@ -7376,7 +7553,7 @@
         const dateStr = `${d}/${m}/${y}`;
 
         const deptName = dept ? dept.name : (sec?.departmentId || 'Data Science');
-        const secName = sec ? sec.name : 'Morning-BS DS Fall 2025 (C)';
+        const secName = sec ? getSectionDisplayName(sec) : 'Morning BS-DS Fall 2025 (A)';
         const isSchool = activeInstitutionType === 'school_college';
 
         if (isSchool) {
@@ -8461,6 +8638,61 @@
         lucide.createIcons();
       }
 
+      function getDeptTag(deptId) {
+        const dept = departments.find(d => d.id === deptId);
+        if (!dept) return deptId || '';
+        const bracketMatch = dept.name.match(/\[(.*?)\]/);
+        if (bracketMatch && bracketMatch[1]) {
+          return bracketMatch[1].replace(/\s+/g, '-');
+        }
+        if (activeInstitutionType === 'school_college') {
+          return dept.id;
+        }
+        if (dept.id.startsWith('BS') || dept.id.includes('-')) {
+          return dept.id;
+        }
+        return `BS-${dept.id}`;
+      }
+
+      function getSectionDisplayName(sec) {
+        if (!sec) return 'Timetable Schedule';
+        if (sec.fullName && !sec.shift && !sec.batch && !sec.year) {
+          return sec.fullName;
+        }
+        const hasCustom = Boolean(sec.shift || sec.batch || sec.year);
+        if (hasCustom) {
+          const parts = [];
+          if (sec.shift) parts.push(sec.shift);
+          const deptTag = getDeptTag(sec.departmentId);
+          if (deptTag) parts.push(deptTag);
+          if (sec.batch) parts.push(sec.batch);
+          if (sec.year) parts.push(sec.year);
+          const prefix = parts.join(' ');
+          const rawName = (sec.name || 'A').replace(/^\(|\)$/g, '').trim();
+          return `${prefix} (${rawName})`;
+        }
+        return sec.fullName || sec.name || 'Section';
+      }
+
+      function updateSectionPreview() {
+        const pEl = document.getElementById('secTitlePreview');
+        if (!pEl) return;
+        const name = document.getElementById('secName')?.value?.trim() || 'A';
+        const deptId = document.getElementById('secDeptSelect')?.value || departments[0]?.id || 'DS';
+        const shift = document.getElementById('secShift')?.value?.trim() || '';
+        const batch = document.getElementById('secBatch')?.value?.trim() || '';
+        const year = document.getElementById('secYear')?.value?.trim() || '';
+
+        const tempSec = {
+          name,
+          departmentId: deptId,
+          shift,
+          batch,
+          year,
+        };
+        pEl.textContent = getSectionDisplayName(tempSec);
+      }
+
       function renderInputTables() {
         renderDepartmentsTable();
 
@@ -8469,18 +8701,36 @@
         if (secTbody) {
           secTbody.innerHTML = sections.map(s => {
             const dept = departments.find(d => d.id === s.departmentId);
+            const displayName = getSectionDisplayName(s);
             return `
               <tr class="hover:bg-slate-900/60 transition-colors">
-                <td class="p-3 font-mono font-bold text-white">${s.name}</td>
-                <td class="p-3 font-mono text-slate-300">${s.studentCount} Students</td>
+                <td class="p-3">
+                  <div class="font-bold text-white font-sans text-xs">${displayName}</div>
+                  <div class="text-[10px] font-mono text-slate-400">ID: ${s.id} • Section: ${s.name}</div>
+                </td>
+                <td class="p-3">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${s.shift ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'text-slate-500'}">
+                    ${s.shift || '—'}
+                  </span>
+                </td>
+                <td class="p-3">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${s.batch ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-500'}">
+                    ${s.batch || '—'}
+                  </span>
+                </td>
+                <td class="p-3">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${s.year ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30' : 'text-slate-500'}">
+                    ${s.year || '—'}
+                  </span>
+                </td>
                 <td class="p-3">
                   <span class="px-2 py-0.5 rounded text-[10px] font-mono border" style="border-color: ${dept?.color || '#8b5cf6'}40; color: ${dept?.color || '#8b5cf6'}; background: ${dept?.color || '#8b5cf6'}15">
                     ${dept?.name || s.departmentId} [${s.departmentId}]
                   </span>
                 </td>
-                <td class="p-3 font-mono text-slate-400">${s.maxDailyHours || 4}h/day</td>
+                <td class="p-3 font-mono text-slate-300">${s.studentCount} Students</td>
                 <td class="p-3 text-right">
-                  <button onclick="deleteSection('${s.id}')" class="p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors">
+                  <button onclick="deleteSection('${s.id}')" class="p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors" title="Delete Section">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </td>
@@ -8519,19 +8769,27 @@
         if (rTbody) {
           rTbody.innerHTML = rooms.map(r => {
             const access = (r.departmentIds || ['ALL']).join(', ');
+            const isLabRoom = r.type === 'Lab Room' || r.type === 'Lab' || r.room_type === 'Lab Room' || r.room_type === 'Lab';
+            const displayType = isLabRoom ? 'Lab Room' : 'Theory Room';
             return `
               <tr class="hover:bg-slate-900/60 transition-colors">
-                <td class="p-3 font-mono font-bold text-white">${r.id}</td>
-                <td class="p-3 text-slate-200">${r.name}</td>
                 <td class="p-3">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-mono ${r.type === 'Lab' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
-                    ${r.type}
+                  <div class="font-bold text-white">${r.name}</div>
+                  <div class="text-[10px] font-mono text-slate-400">${r.id}</div>
+                </td>
+                <td class="p-3">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${isLabRoom ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
+                    ${displayType}
                   </span>
                 </td>
                 <td class="p-3 font-mono text-slate-300">${r.capacity} seats</td>
-                <td class="p-3 font-mono text-xs text-slate-400">${access}</td>
+                <td class="p-3 font-mono text-xs text-slate-400">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-900 border border-violet-500/20 text-violet-300">
+                    ${access}
+                  </span>
+                </td>
                 <td class="p-3 text-right">
-                  <button onclick="deleteRoom('${r.id}')" class="p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors">
+                  <button onclick="deleteRoom('${r.id}')" class="p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors" title="Delete Room">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </td>
@@ -8547,22 +8805,37 @@
             const sec = sections.find(s => s.id === c.sectionId);
             const teach = teachers.find(t => t.id === c.teacherId);
             const dept = departments.find(d => d.id === c.departmentId);
+            const isLab = (
+              c.courseType === 'Lab' ||
+              c.course_type === 'Lab' ||
+              c.requiredRoomType === 'Lab Room' ||
+              c.requiredRoomType === 'Lab' ||
+              c.required_room_type === 'Lab Room' ||
+              c.code.endsWith('L') ||
+              c.title.toLowerCase().includes('lab')
+            );
+            const displayCourseType = isLab ? 'Lab' : 'Theory';
+            const displayReqRoom = isLab ? 'Lab Room' : 'Theory Room';
 
             return `
               <tr class="hover:bg-slate-900/60 transition-colors">
-                <td class="p-3 font-mono font-bold text-white">${c.code}</td>
-                <td class="p-3 text-slate-200">${c.title}</td>
+                <td class="p-3 font-semibold text-white">${c.title}</td>
+                <td class="p-3 font-mono text-xs text-violet-300 font-bold">${c.code}</td>
                 <td class="p-3">
                   <span class="px-2 py-0.5 rounded text-[10px] font-mono border" style="border-color: ${dept?.color || '#8b5cf6'}40; color: ${dept?.color || '#8b5cf6'}; background: ${dept?.color || '#8b5cf6'}15">
                     ${c.departmentId}
                   </span>
                 </td>
-                <td class="p-3 font-mono text-violet-300">${sec?.name || c.sectionId}</td>
+                <td class="p-3 font-mono text-violet-300">${sec ? getSectionDisplayName(sec) : c.sectionId}</td>
                 <td class="p-3 text-slate-300">${teach?.name || c.teacherId}</td>
                 <td class="p-3 font-mono text-slate-300">${activeInstitutionType === 'school_college' ? (c.weeklyPeriods || c.creditHours) + ' Periods/wk' : c.creditHours + ' Credits'}</td>
-                <td class="p-3 font-mono text-xs ${c.requiredRoomType === 'Lab' ? 'text-amber-400' : 'text-emerald-400'}">${c.requiredRoomType}</td>
+                <td class="p-3">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold ${isLab ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
+                    ${displayCourseType} <span class="opacity-75">(${displayReqRoom})</span>
+                  </span>
+                </td>
                 <td class="p-3 text-right">
-                  <button onclick="deleteCourse('${c.id}')" class="p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors">
+                  <button onclick="deleteCourse('${c.id}')" class="p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors" title="Delete Course">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </td>
@@ -8579,25 +8852,35 @@
         const name = document.getElementById('secName')?.value?.trim();
         const count = parseInt(document.getElementById('secStudents')?.value) || 45;
         const deptId = document.getElementById('secDeptSelect')?.value || departments[0]?.id || 'DS';
+        const shift = document.getElementById('secShift')?.value?.trim() || '';
+        const batch = document.getElementById('secBatch')?.value?.trim() || '';
+        const yearVal = document.getElementById('secYear')?.value?.trim();
+        const year = yearVal ? parseInt(yearVal, 10) : null;
 
         if (!name) return;
 
         const newSec = {
           id: `sec-${Date.now().toString().slice(-4)}`,
           name,
+          shift,
+          batch,
+          year,
           departmentId: deptId,
           studentCount: count,
           maxDailyHours: 4,
         };
+        newSec.fullName = getSectionDisplayName(newSec);
 
         sections.push(newSec);
         saveDataPortalState();
         document.getElementById('secName').value = '';
+        if (document.getElementById('secYear')) document.getElementById('secYear').value = '';
+        updateSectionPreview();
 
         renderInputTables();
         updateSelectOptions();
         renderSectionSubTabs();
-        showToast('success', 'Section Added', `Section '${name}' created in ${deptId}.`);
+        showToast('success', 'Cohort Registered', `Section '${newSec.fullName}' registered in ${deptId}.`);
       }
 
       function deleteSection(id) {
@@ -8649,7 +8932,8 @@
       function handleAddRoom(e) {
         e.preventDefault();
         const name = document.getElementById('rName')?.value?.trim();
-        const type = document.getElementById('rType')?.value || 'Lecture';
+        const rawType = document.getElementById('rType')?.value?.trim() || 'Theory Room';
+        const type = (rawType === 'Lab Room' || rawType === 'Lab' || rawType.toLowerCase().includes('lab')) ? 'Lab Room' : 'Theory Room';
         const cap = parseInt(document.getElementById('rCap')?.value) || 60;
         const access = document.getElementById('rDeptAccess')?.value || 'ALL';
 
@@ -8661,6 +8945,7 @@
           id: `r-${Date.now().toString().slice(-4)}`,
           name,
           type,
+          room_type: type,
           capacity: cap,
           departmentIds: deptIds,
         };
@@ -8671,7 +8956,7 @@
 
         renderInputTables();
         updateSelectOptions();
-        showToast('success', 'Facility Added', `Room '${name}' added successfully.`);
+        showToast('success', 'Room Registered', `Room '${name}' registered as '${type}'.`);
       }
 
       function deleteRoom(id) {
@@ -8682,20 +8967,270 @@
         generateBalancedTimetable();
       }
 
+      // ---------------------------------------------------------
+      // Automatic Course Code Generator
+      // ---------------------------------------------------------
+      function generateCourseCode(title, courseType, deptId) {
+        const cleanTitle = (title || '').trim();
+        if (!cleanTitle) return `CRS-${Date.now().toString().slice(-4)}`;
+
+        // If title is short (<= 6 chars) and no spaces, like "SE", "LA", "CS101", use it directly uppercase
+        if (cleanTitle.length <= 6 && !cleanTitle.includes(' ')) {
+          let candidate = cleanTitle.toUpperCase();
+          if (!courses.some(c => c.code && c.code.toUpperCase() === candidate)) {
+            return candidate;
+          }
+        }
+
+        const words = cleanTitle.split(/[\s\-_]+/).filter(Boolean);
+        let base = '';
+        if (words.length === 1) {
+          base = words[0].toUpperCase().slice(0, 6);
+        } else {
+          // If first word is acronym like DSA, IDS, CN, OOP, SE, AI, ML
+          if (words[0].length <= 5 && /^[A-Za-z0-9]+$/.test(words[0])) {
+            const restInitials = words.slice(1).map(w => w[0].toUpperCase()).join('');
+            base = `${words[0].toUpperCase()}-${restInitials}`;
+          } else {
+            base = words.map(w => w[0].toUpperCase()).join('');
+          }
+        }
+
+        const isLab = courseType === 'Lab' || cleanTitle.toLowerCase().includes('lab');
+        if (isLab && !base.includes('LAB') && !base.endsWith('L')) {
+          base += '-L';
+        }
+
+        let candidate = base || 'CRS';
+        let counter = 1;
+        while (courses.some(c => c.code && c.code.toUpperCase() === candidate.toUpperCase())) {
+          counter++;
+          candidate = `${base}-${counter}`;
+        }
+        return candidate;
+      }
+
+      // ---------------------------------------------------------
+      // Searchable Teacher Combobox Logic
+      // ---------------------------------------------------------
+      let teacherDropdownActiveIndex = -1;
+
+      function openTeacherDropdown() {
+        const list = document.getElementById('cTeacherDropdownList');
+        if (list) {
+          list.classList.remove('hidden');
+          renderTeacherDropdown('');
+        }
+      }
+
+      function closeTeacherDropdown() {
+        const list = document.getElementById('cTeacherDropdownList');
+        if (list) {
+          list.classList.add('hidden');
+        }
+        teacherDropdownActiveIndex = -1;
+      }
+
+      function handleTeacherSearchInput(val) {
+        const list = document.getElementById('cTeacherDropdownList');
+        if (list) {
+          list.classList.remove('hidden');
+        }
+        const clearBtn = document.getElementById('cTeacherClearBtn');
+        if (clearBtn) {
+          if (val && val.trim().length > 0) {
+            clearBtn.classList.remove('hidden');
+          } else {
+            clearBtn.classList.add('hidden');
+          }
+        }
+        teacherDropdownActiveIndex = -1;
+        renderTeacherDropdown(val);
+      }
+
+      function renderTeacherDropdown(query) {
+        const list = document.getElementById('cTeacherDropdownList');
+        if (!list) return;
+
+        const q = (query || '').toLowerCase().trim();
+        const selectedId = document.getElementById('cTeacherSelect')?.value;
+
+        const filtered = teachers.filter(t => {
+          if (!q) return true;
+          const matchName = t.name.toLowerCase().includes(q);
+          const matchDept = (t.departmentIds || []).some(d => d.toLowerCase().includes(q));
+          return matchName || matchDept;
+        });
+
+        if (filtered.length === 0) {
+          list.innerHTML = `
+            <div class="p-3 text-slate-400 text-center font-mono text-xs">
+              No faculty found matching "<span class="text-white">${query}</span>"
+            </div>
+          `;
+          return;
+        }
+
+        list.innerHTML = filtered.map((t, idx) => {
+          const isSelected = t.id === selectedId;
+          const depts = (t.departmentIds || []).join(', ');
+          return `
+            <div 
+              id="teacher-item-${idx}" 
+              data-teacher-id="${t.id}"
+              onclick="selectTeacherItem('${t.id}')" 
+              class="p-2.5 hover:bg-violet-600/20 cursor-pointer flex items-center justify-between transition-colors ${isSelected ? 'bg-violet-600/30' : ''}"
+            >
+              <div>
+                <div class="font-medium text-white flex items-center gap-1.5">
+                  ${t.name}
+                </div>
+                <div class="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
+                  <span class="font-mono text-violet-300">Depts: ${depts || 'General'}</span>
+                  <span>•</span>
+                  <span>Max: ${t.maxDailySlots || 4}/day</span>
+                </div>
+              </div>
+              ${isSelected ? '<i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>' : ''}
+            </div>
+          `;
+        }).join('');
+
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function selectTeacherItem(teacherId) {
+        const t = teachers.find(item => item.id === teacherId);
+        if (!t) return;
+
+        const sel = document.getElementById('cTeacherSelect');
+        const input = document.getElementById('cTeacherSearchInput');
+        const clearBtn = document.getElementById('cTeacherClearBtn');
+        const badge = document.getElementById('cTeacherSelectedDeptBadge');
+
+        if (sel) {
+          sel.value = t.id;
+        }
+        if (input) {
+          input.value = t.name;
+        }
+        if (clearBtn) {
+          clearBtn.classList.remove('hidden');
+        }
+        if (badge) {
+          badge.textContent = `[${(t.departmentIds || []).join(', ')}]`;
+        }
+
+        closeTeacherDropdown();
+      }
+
+      function clearTeacherSelection(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        const sel = document.getElementById('cTeacherSelect');
+        const input = document.getElementById('cTeacherSearchInput');
+        const clearBtn = document.getElementById('cTeacherClearBtn');
+        const badge = document.getElementById('cTeacherSelectedDeptBadge');
+
+        if (sel) sel.value = '';
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+        if (clearBtn) clearBtn.classList.add('hidden');
+        if (badge) badge.textContent = '';
+
+        openTeacherDropdown();
+      }
+
+      function handleTeacherSearchKeydown(e) {
+        const list = document.getElementById('cTeacherDropdownList');
+        if (!list || list.classList.contains('hidden')) {
+          if (e.key === 'ArrowDown' || e.key === 'Enter') {
+            openTeacherDropdown();
+            e.preventDefault();
+          }
+          return;
+        }
+
+        const items = list.querySelectorAll('[data-teacher-id]');
+        if (!items || items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          teacherDropdownActiveIndex = (teacherDropdownActiveIndex + 1) % items.length;
+          items.forEach((it, i) => {
+            if (i === teacherDropdownActiveIndex) {
+              it.classList.add('bg-violet-600/40');
+              it.scrollIntoView({ block: 'nearest' });
+            } else {
+              it.classList.remove('bg-violet-600/40');
+            }
+          });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          teacherDropdownActiveIndex = (teacherDropdownActiveIndex - 1 + items.length) % items.length;
+          items.forEach((it, i) => {
+            if (i === teacherDropdownActiveIndex) {
+              it.classList.add('bg-violet-600/40');
+              it.scrollIntoView({ block: 'nearest' });
+            } else {
+              it.classList.remove('bg-violet-600/40');
+            }
+          });
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (teacherDropdownActiveIndex >= 0 && teacherDropdownActiveIndex < items.length) {
+            const tId = items[teacherDropdownActiveIndex].getAttribute('data-teacher-id');
+            selectTeacherItem(tId);
+          } else if (items.length > 0) {
+            const tId = items[0].getAttribute('data-teacher-id');
+            selectTeacherItem(tId);
+          }
+        } else if (e.key === 'Escape') {
+          closeTeacherDropdown();
+        }
+      }
+
+      // Close teacher dropdown on outside click
+      document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('teacherSearchWrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+          closeTeacherDropdown();
+        }
+      });
+
       function handleAddCourse(e) {
         e.preventDefault();
         const title = document.getElementById('cTitle')?.value?.trim();
-        const code = document.getElementById('cCode')?.value?.trim();
         const deptId = document.getElementById('cDeptSelect')?.value || departments[0]?.id || '';
         const secId = document.getElementById('cSecSelect')?.value;
-        const teacherId = document.getElementById('cTeacherSelect')?.value;
-        const credits = parseInt(document.getElementById('cCredits')?.value) || 3;
-        const type = document.getElementById('cIsLab')?.value || 'Lecture';
+        let teacherId = document.getElementById('cTeacherSelect')?.value;
+        const teacherSearchText = document.getElementById('cTeacherSearchInput')?.value?.trim();
 
-        if (!title || !code || !secId || !teacherId) {
-          showToast('error', 'Missing Information', 'Please complete title, code, section, and faculty member.');
+        // If teacherId is not set but user typed a name, attempt to match teacher
+        if (!teacherId && teacherSearchText) {
+          const matched = teachers.find(t => t.name.toLowerCase() === teacherSearchText.toLowerCase()) ||
+                          teachers.find(t => t.name.toLowerCase().includes(teacherSearchText.toLowerCase()));
+          if (matched) {
+            teacherId = matched.id;
+            document.getElementById('cTeacherSelect').value = matched.id;
+          }
+        }
+
+        const credits = parseInt(document.getElementById('cCredits')?.value) || 3;
+        const rawCourseType = document.getElementById('cIsLab')?.value?.trim() || 'Theory';
+        const courseType = (rawCourseType === 'Lab' || rawCourseType.toLowerCase().includes('lab')) ? 'Lab' : 'Theory';
+        const reqRoomType = courseType === 'Lab' ? 'Lab Room' : 'Theory Room';
+
+        if (!title || !secId || !teacherId) {
+          showToast('error', 'Missing Information', 'Please complete course title, section, and faculty member.');
           return;
         }
+
+        const code = generateCourseCode(title, courseType, deptId);
 
         const newC = {
           id: `c-${Date.now().toString().slice(-4)}`,
@@ -8706,18 +9241,40 @@
           weeklyPeriods: credits,
           sectionId: secId,
           teacherId,
-          requiredRoomType: type,
+          courseType,
+          course_type: courseType,
+          requiredRoomType: reqRoomType,
+          required_room_type: reqRoomType,
         };
 
         courses.push(newC);
         saveDataPortalState();
-        document.getElementById('cTitle').value = '';
-        document.getElementById('cCode').value = '';
+
+        // Retain the current section selection for Pic 2
+        const prevSecId = secId;
+
+        // Clear course title ready for the next course entry
+        const titleInput = document.getElementById('cTitle');
+        if (titleInput) {
+          titleInput.value = '';
+          titleInput.focus();
+        }
 
         renderInputTables();
         updateSelectOptions();
+
+        // Restore selected section so user does not have to select it again
+        if (prevSecId && document.getElementById('cSecSelect')) {
+          const secSelect = document.getElementById('cSecSelect');
+          if (Array.from(secSelect.options).some(o => o.value === prevSecId)) {
+            secSelect.value = prevSecId;
+          }
+        }
+
         generateBalancedTimetable();
-        showToast('success', 'Course Added', `Course ${code} assigned to section.`);
+        const secObj = sections.find(s => s.id === secId);
+        const secDisplay = secObj ? getSectionDisplayName(secObj) : secId;
+        showToast('success', 'Course Added', `Course '${title}' (${code}) added for ${secDisplay}.`);
       }
 
       function deleteCourse(id) {
@@ -8731,10 +9288,14 @@
       function handleCourseDeptChange(deptId) {
         const secSelect = document.getElementById('cSecSelect');
         if (secSelect) {
+          const prevSecVal = secSelect.value;
           const deptSecs = sections.filter(s => s.departmentId === deptId);
           const secsToUse = deptSecs.length > 0 ? deptSecs : sections;
           if (secsToUse.length > 0) {
-            secSelect.innerHTML = secsToUse.map(s => `<option value="${s.id}">${s.name} (${s.studentCount} students)</option>`).join('');
+            secSelect.innerHTML = secsToUse.map(s => `<option value="${s.id}">${getSectionDisplayName(s)} (${s.studentCount} students)</option>`).join('');
+            if (prevSecVal && secsToUse.some(s => s.id === prevSecVal)) {
+              secSelect.value = prevSecVal;
+            }
           } else {
             secSelect.innerHTML = '<option value="" disabled selected>No sections in this department</option>';
           }
@@ -8785,22 +9346,50 @@
 
         const cSecSelect = document.getElementById('cSecSelect');
         if (cSecSelect) {
+          const prevSecVal = cSecSelect.value;
           const currentDept = cDeptSelect?.value || departments[0]?.id || '';
           const deptSecs = sections.filter(s => s.departmentId === currentDept);
           const secsToUse = deptSecs.length > 0 ? deptSecs : sections;
           if (secsToUse.length > 0) {
-            cSecSelect.innerHTML = secsToUse.map(s => `<option value="${s.id}">${s.name} (${s.studentCount} students)</option>`).join('');
+            cSecSelect.innerHTML = secsToUse.map(s => `<option value="${s.id}">${getSectionDisplayName(s)} (${s.studentCount} students)</option>`).join('');
+            if (prevSecVal && secsToUse.some(s => s.id === prevSecVal)) {
+              cSecSelect.value = prevSecVal;
+            }
           } else {
             cSecSelect.innerHTML = '<option value="" disabled selected>No sections added yet</option>';
           }
         }
 
         const cTeacherSelect = document.getElementById('cTeacherSelect');
+        const cTeacherInput = document.getElementById('cTeacherSearchInput');
+        const clearBtn = document.getElementById('cTeacherClearBtn');
+        const badge = document.getElementById('cTeacherSelectedDeptBadge');
+
         if (cTeacherSelect) {
+          const prevTeacherId = cTeacherSelect.value;
           if (teachers.length > 0) {
             cTeacherSelect.innerHTML = teachers.map(t => `<option value="${t.id}">${t.name} (Depts: ${(t.departmentIds || []).join(', ')})</option>`).join('');
+
+            const activeTeacher = teachers.find(t => t.id === prevTeacherId) || teachers[0];
+            cTeacherSelect.value = activeTeacher.id;
+
+            if (cTeacherInput && (!cTeacherInput.value || !prevTeacherId)) {
+              cTeacherInput.value = activeTeacher.name;
+              if (clearBtn) clearBtn.classList.remove('hidden');
+              if (badge) badge.textContent = `[${(activeTeacher.departmentIds || []).join(', ')}]`;
+            } else if (cTeacherInput && activeTeacher) {
+              const currentT = teachers.find(t => t.id === cTeacherSelect.value);
+              if (currentT) {
+                cTeacherInput.value = currentT.name;
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                if (badge) badge.textContent = `[${(currentT.departmentIds || []).join(', ')}]`;
+              }
+            }
           } else {
             cTeacherSelect.innerHTML = '<option value="" disabled selected>No faculty added yet</option>';
+            if (cTeacherInput) cTeacherInput.value = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (badge) badge.textContent = '';
           }
         }
 
@@ -8808,8 +9397,7 @@
         if (selectSection) {
           if (sections.length > 0) {
             selectSection.innerHTML = sections.map(s => {
-              const dept = departments.find(d => d.id === s.departmentId);
-              return `<option value="${s.id}" class="bg-slate-900">${s.name} (${s.studentCount} students - ${dept?.name || s.departmentId})</option>`;
+              return `<option value="${s.id}" class="bg-slate-900">${getSectionDisplayName(s)} (${s.studentCount} students)</option>`;
             }).join('');
             if (activeSectionId && sections.some(s => s.id === activeSectionId)) {
               selectSection.value = activeSectionId;
@@ -8835,7 +9423,10 @@
         const selectRoom = document.getElementById('selectRoom');
         if (selectRoom) {
           if (rooms.length > 0) {
-            selectRoom.innerHTML = rooms.map(r => `<option value="${r.id}" class="bg-slate-900">${r.name} (${r.type} - cap ${r.capacity})</option>`).join('');
+            selectRoom.innerHTML = rooms.map(r => {
+              const rType = (r.type === 'Lab Room' || r.type === 'Lab' || r.room_type === 'Lab Room' || r.room_type === 'Lab') ? 'Lab Room' : 'Theory Room';
+              return `<option value="${r.id}" class="bg-slate-900">${r.name} (${rType} - cap ${r.capacity})</option>`;
+            }).join('');
           } else {
             selectRoom.innerHTML = '<option value="" class="bg-slate-900" disabled selected>No rooms added yet</option>';
           }

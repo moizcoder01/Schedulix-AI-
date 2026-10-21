@@ -92,8 +92,17 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 class RoomType(str, Enum):
     """Enumeration of physical campus facility types."""
+    THEORY_ROOM = "Theory Room"
+    LAB_ROOM = "Lab Room"
     LAB = "Lab"
     LECTURE = "Lecture"
+    THEORY = "Theory"
+
+
+class CourseType(str, Enum):
+    """Enumeration of academic course instructional types."""
+    THEORY = "Theory"
+    LAB = "Lab"
 
 
 class Department(BaseModel):
@@ -167,7 +176,7 @@ class Room(BaseModel):
             "example": {
                 "room_id": "r-201",
                 "capacity": 60,
-                "room_type": "Lab",
+                "room_type": "Lab Room",
                 "department_ids": ["ALL"],
             }
         },
@@ -179,13 +188,21 @@ class Room(BaseModel):
         Field(gt=0, le=1000, description="Total seating or workstation capacity"),
     ]
     room_type: Annotated[
-        RoomType,
-        Field(description="Classification of room: 'Lab' or 'Lecture'"),
+        str,
+        Field(description="Classification of room: 'Theory Room' or 'Lab Room'"),
     ]
     department_ids: Annotated[
         List[str],
         Field(default_factory=lambda: ["ALL"], description="Authorized departments or ['ALL'] for shared facilities"),
     ]
+
+    @field_validator("room_type", mode="before")
+    @classmethod
+    def normalize_room_type(cls, v: Any) -> str:
+        s = str(v).strip()
+        if "lab" in s.lower():
+            return "Lab Room"
+        return "Theory Room"
 
 
 class Section(BaseModel):
@@ -198,6 +215,11 @@ class Section(BaseModel):
                 "department_id": "DS",
                 "total_students": 45,
                 "max_daily_hours": 4,
+                "name": "A",
+                "shift": "Morning",
+                "batch": "Fall",
+                "year": 2025,
+                "full_name": "Morning BS-DS Fall 2025 (A)",
             }
         },
     )
@@ -220,6 +242,11 @@ class Section(BaseModel):
             description="Maximum allowed class hours per day to prevent student burnout (up to 5h)",
         ),
     ] = 5
+    name: Optional[str] = None
+    shift: Optional[str] = None
+    batch: Optional[str] = None
+    year: Optional[int] = None
+    full_name: Optional[str] = None
 
 
 class Course(BaseModel):
@@ -235,7 +262,8 @@ class Course(BaseModel):
                 "weekly_periods": 3,
                 "section_id": "sec-6A",
                 "teacher_id": "t-101",
-                "required_room_type": "Lecture",
+                "course_type": "Theory",
+                "required_room_type": "Theory Room",
             }
         },
     )
@@ -261,10 +289,32 @@ class Course(BaseModel):
     ]
     section_id: Annotated[str, Field(min_length=1, description="Target enrolled section identifier")]
     teacher_id: Annotated[str, Field(min_length=1, description="Assigned primary faculty identifier")]
+    course_type: Annotated[
+        Optional[str],
+        Field(default="Theory", description="Course Type: 'Theory' or 'Lab'"),
+    ] = "Theory"
     required_room_type: Annotated[
-        RoomType,
-        Field(description="Room type required: 'Lab' for practicals or 'Lecture' for halls"),
-    ]
+        Optional[str],
+        Field(default="Theory Room", description="Room type required: 'Theory Room' or 'Lab Room'"),
+    ] = "Theory Room"
+
+    @model_validator(mode="after")
+    def sync_course_and_room_type(self) -> Course:
+        c_type_raw = str(self.course_type or "").strip().lower()
+        r_type_raw = str(self.required_room_type or "").strip().lower()
+        is_lab = (
+            c_type_raw == "lab"
+            or "lab" in r_type_raw
+            or self.course_code.endswith("L")
+            or "lab" in self.title.lower()
+        )
+        if is_lab:
+            self.course_type = "Lab"
+            self.required_room_type = "Lab Room"
+        else:
+            self.course_type = "Theory"
+            self.required_room_type = "Theory Room"
+        return self
 
 
 class InstitutionType(str, Enum):
@@ -647,15 +697,20 @@ async def ingest_university_configuration(payload: UniversityPayload) -> Validat
         # Check 3: Room Type & Seating Capacity Compatibility
         adequate_rooms: List[str] = []
         if section:
+            c_req_str = course.required_room_type.value if hasattr(course.required_room_type, "value") else str(course.required_room_type or "")
+            req_type_norm = "Lab Room" if "lab" in c_req_str.lower() else "Theory Room"
+
             for r in payload.rooms:
-                if r.room_type == course.required_room_type and r.capacity >= section.total_students:
+                r_type_str = r.room_type.value if hasattr(r.room_type, "value") else str(r.room_type or "")
+                r_type_norm = "Lab Room" if "lab" in r_type_str.lower() else "Theory Room"
+                if r_type_norm == req_type_norm and r.capacity >= section.total_students:
                     adequate_rooms.append(f"{r.room_id} (cap: {r.capacity})")
 
             if not adequate_rooms:
                 err_msg = (
-                    f"Course '{course.course_code}' requires a '{course.required_room_type.value}' "
+                    f"Course '{course.course_code}' requires a '{req_type_norm}' "
                     f"for Section '{section.section_id}' ({section.total_students} students), but no room "
-                    f"of type '{course.required_room_type.value}' has capacity >= {section.total_students}."
+                    f"of type '{req_type_norm}' has capacity >= {section.total_students}."
                 )
                 errors.append(err_msg)
                 course_errors.append(err_msg)

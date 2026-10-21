@@ -5,5 +5,17 @@
     "setup_completed": true,
     "updated_at": "2026-10-14T10:51:09.144Z"
   },
-  "users": {}
+  "users": {
+    "moizkhanlinkedin@gmail.com": {
+      "email": "moizkhanlinkedin@gmail.com",
+      "password_hash": "46ec9621f4c67d685521de3a705c408ed0142120568ceaa81e4ccee566ac4c19",
+      "salt": "c4a89d1234567890abcdef1234567890",
+      "registered_at": "2026-10-21T11:46:00.000Z",
+      "status": "active",
+      "selected_plan": "2-Year (PKR 7,000)",
+      "access_granted_at": "2026-10-21T11:46:00.000Z",
+      "access_expires_at": "2028-10-20T18:55:32.579Z",
+      "duration_days": 730
+    }
+  }
 }

@@ -42,6 +42,7 @@ class AssignedSlot(BaseModel):
     course_code: str
     course_title: str
     section_id: str
+    section_name: Optional[str] = None
     department_id: str = "DS"
     department_name: str = "Data Science"
     teacher_id: str
@@ -283,12 +284,16 @@ class DSaturTimetableScheduler:
             t_max_daily = teacher.max_daily_slots if teacher else 4
             t_max_cont = teacher.max_continuous_slots if teacher else 2
 
+            c_type_raw = str(getattr(course, "course_type", "") or "").strip().lower()
+            r_type_raw = str(getattr(course, "required_room_type", "") or "").strip().lower()
+
             is_lab = (
-                (hasattr(course.required_room_type, "value") and course.required_room_type.value == "Lab")
-                or str(course.required_room_type) == "Lab"
+                c_type_raw == "lab"
+                or "lab" in r_type_raw
                 or course.course_code.endswith("L")
                 or "lab" in course.title.lower()
             )
+            req_room_type = "Lab Room" if is_lab else "Theory Room"
 
             if self.institution_type == "school_college":
                 units_count = getattr(course, "weekly_periods", None) or course.credit_hours or 3
@@ -308,9 +313,9 @@ class DSaturTimetableScheduler:
                         teacher_name=t_name,
                         teacher_max_daily=t_max_daily,
                         teacher_max_continuous=t_max_cont,
-                        required_room_type="Lecture",
+                        required_room_type=req_room_type,
                         duration=1,
-                        is_lab=False,
+                        is_lab=is_lab,
                     )
             elif is_lab:
                 # Continuous Lab Block (Default 3h block)
@@ -329,7 +334,7 @@ class DSaturTimetableScheduler:
                     teacher_name=t_name,
                     teacher_max_daily=max(t_max_daily, self.lab_block_duration_hours),
                     teacher_max_continuous=self.max_consecutive_lab_hours,
-                    required_room_type="Lab",
+                    required_room_type="Lab Room",
                     duration=self.lab_block_duration_hours,
                     is_lab=True,
                 )
@@ -352,7 +357,7 @@ class DSaturTimetableScheduler:
                         teacher_name=t_name,
                         teacher_max_daily=t_max_daily,
                         teacher_max_continuous=self.max_consecutive_theory_hours,
-                        required_room_type="Lecture",
+                        required_room_type="Theory Room",
                         duration=2,
                         partner_id=b2_id,
                         is_lab=False,
@@ -371,7 +376,7 @@ class DSaturTimetableScheduler:
                         teacher_name=t_name,
                         teacher_max_daily=t_max_daily,
                         teacher_max_continuous=self.max_consecutive_theory_hours,
-                        required_room_type="Lecture",
+                        required_room_type="Theory Room",
                         duration=1,
                         partner_id=b1_id,
                         is_lab=False,
@@ -392,7 +397,7 @@ class DSaturTimetableScheduler:
                         teacher_name=t_name,
                         teacher_max_daily=t_max_daily,
                         teacher_max_continuous=self.max_consecutive_theory_hours,
-                        required_room_type="Lecture",
+                        required_room_type="Theory Room",
                         duration=2,
                         is_lab=False,
                     )
@@ -412,7 +417,7 @@ class DSaturTimetableScheduler:
                         teacher_name=t_name,
                         teacher_max_daily=t_max_daily,
                         teacher_max_continuous=self.max_consecutive_theory_hours,
-                        required_room_type="Lecture",
+                        required_room_type="Theory Room",
                         duration=1,
                         is_lab=False,
                     )
@@ -568,14 +573,20 @@ class DSaturTimetableScheduler:
                         if room_depts and "ALL" not in room_depts and curr_node.department_id not in room_depts:
                             continue
 
-                        r_type = (
+                        raw_r_type = (
                             room.room_type.value
                             if hasattr(room.room_type, "value")
                             else str(room.room_type)
                         )
-                        if curr_node.required_room_type == "Lab" and r_type != "Lab":
+                        r_type = "Lab Room" if "lab" in raw_r_type.lower() else "Theory Room"
+
+                        # Strict Room-Type to Course-Type Hard Constraint:
+                        # Condition A: If the current node being scheduled is a Lab course, the algorithm MUST filter the available rooms and ONLY assign a room where room_type == 'Lab Room'.
+                        # Condition B: If the current node is a Theory course, the algorithm MUST ONLY assign a room where room_type == 'Theory Room'.
+                        # If no room of the correct type is free in this time slot, algorithm moves to the next valid time slot.
+                        if curr_node.is_lab and r_type != "Lab Room":
                             continue
-                        if curr_node.required_room_type != "Lab" and r_type == "Lab":
+                        if not curr_node.is_lab and r_type != "Theory Room":
                             continue
 
                         if room.capacity < curr_node.section_students:
@@ -675,6 +686,9 @@ class DSaturTimetableScheduler:
                     )
 
                     period_val = current_slot_idx + 1 if self.institution_type == "school_college" else (current_slot_idx if current_slot_idx >= 4 else current_slot_idx + 1)
+                    sec_obj = self.sections_map.get(node.section_id)
+                    sec_full = getattr(sec_obj, "full_name", None) or getattr(sec_obj, "name", None) or node.section_id
+
                     slot_entry = AssignedSlot(
                         day=day_name,
                         day_index=node.assigned_day,
@@ -684,6 +698,7 @@ class DSaturTimetableScheduler:
                         course_code=node.course_code,
                         course_title=node.title,
                         section_id=node.section_id,
+                        section_name=sec_full,
                         department_id=node.department_id,
                         department_name=node.department_name,
                         teacher_id=node.teacher_id,
